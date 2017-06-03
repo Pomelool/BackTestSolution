@@ -1,0 +1,101 @@
+Heqian Liu
+
+Problem 1
+SELECT CONCAT_WS(" ", `first_name`, `last_name`) AS `full name`, player_id AS 'id', FK_position as 'position', signed_date, COUNT(goal_id) AS 'total goals'
+FROM `hockey`.`player`
+JOIN `hockey`.`team` ON `hockey`.`player`.FK_team_id = `hockey`.`team`.team_id
+LEFT JOIN `hockey`.`goal` ON `hockey`.`goal`.FK_player_id = `hockey`.`player`.player_id
+WHERE retired_date IS NULL
+AND name = 'dallas pengiuns';
+
+Problem 2
+SELECT timestamp AS 'Top 5 days of goals'
+FROM `hockey`.`goal`
+GROUP BY timestamp
+ORDER BY COUNT(goal_id) desc
+LIMIT 5;
+
+Problem 3
+SELECT CONCAT_WS(" ", `first_name`, `last_name`) AS `full name`, player_id AS 'id', name AS 'team', DATEDIFF(retired_date, signed_date) AS 'career length(Days)'
+FROM `hockey`.`player`
+JOIN `hockey`.`team` ON `hockey`.`player`.FK_team_id = `hockey`.`team`.team_id
+WHERE retired_date IS NOT NULL
+ORDER BY team, `full name` desc;
+
+Problem 4
+SELECT CONCAT_WS(" ", `first_name`, `last_name`) AS `full name`, FK_position AS 'position', COUNT(goal_id) AS 'total goals'
+FROM `hockey`.`player`
+LEFT JOIN `hockey`.`goal` ON `hockey`.`player`.player_id = `hockey`.`goal`.FK_player_id
+JOIN `hockey`.`team` ON `hockey`.`player`.FK_team_id = `hockey`.`team`.team_id
+WHERE retired_date IS NULL
+GROUP BY player_id
+ORDER BY name, position, `total goals` desc;
+
+Problem 5
+SELECT FK_position AS 'Position With Most Goals in 2015'
+FROM `hockey`.`goal`
+JOIN `hockey`.`player` ON `hockey`.`goal`.FK_player_id = `hockey`.`player`.player_id
+WHERE LEFT(timestamp, 4) = 2015
+GROUP BY FK_position
+ORDER BY COUNT(goal_id) desc
+LIMIT 1;
+
+Problem 6
+SELECT name AS 'the top 10 teams who have scored the most goals'
+FROM `hockey`.`goal`
+JOIN `hockey`.`player` ON `hockey`.`goal`.FK_player_id = `hockey`.`player`.player_id
+JOIN `hockey`.`team` ON `hockey`.`team`.team_id = `hockey`.`player`.FK_team_id
+WHERE LEFT(timestamp, 4) BETWEEN 2012 AND 2016
+GROUP BY team_id
+ORDER BY COUNT(goal_id) desc
+LIMIT 10;
+
+Problem 7
+SELECT CONCAT_WS(" ", `first_name`, `last_name`) AS `full name`, COUNT(goal_id) AS 'total goals'
+FROM `hockey`.`player`
+JOIN `hockey`.`team` ON `hockey`.`player`.FK_team_id = `hockey`.`team`.team_id
+LEFT JOIN `hockey`.`goal` ON `hockey`.`goal`.FK_player_id = `hockey`.`player`.player_id
+WHERE retired_date IS NOT NULL
+AND name = 'michigan minutemen'
+AND FK_position = 'defense'
+GROUP BY player_id;
+
+Problem 8
+SELECT name AS 'the team who have scored the most goalie goals'
+FROM `hockey`.`goal`
+JOIN `hockey`.`player` ON `hockey`.`goal`.FK_player_id = `hockey`.`player`.player_id
+JOIN `hockey`.`team` ON `hockey`.`team`.team_id = `hockey`.`player`.FK_team_id
+WHERE FK_position = 'goalie'
+GROUP BY team_id
+ORDER BY COUNT(goal_id) desc
+LIMIT 1;
+
+Problem 9
+CREATE INDEX IX_player_lastname
+ON `hockey`.`player` (last_name);
+
+Problem 10
+Add a teamid column (INT) in goal table so that there is no need to involve player table to conduct team goal analysis. 
+For example for question 6, we don't need to join player table any more.
+
+Problem 11
+CREATE INDEX IX_player_composite
+ON `hockey`.`player` (first_name ASC, last_name DESC, FK_position ASC, signed_date DESC);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
